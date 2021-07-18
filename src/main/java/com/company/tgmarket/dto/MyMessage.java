@@ -1,7 +1,6 @@
 package com.company.tgmarket.dto;
 
 import com.company.tgmarket.enums.MessageType;
-import com.sun.xml.internal.ws.resources.SenderMessages;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
