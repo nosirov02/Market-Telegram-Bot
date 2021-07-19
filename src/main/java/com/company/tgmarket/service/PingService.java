@@ -1,4 +1,4 @@
-package com.company.tgmarket.controllers;
+package com.company.tgmarket.service;
 
 import lombok.Getter;
 import lombok.Setter;
