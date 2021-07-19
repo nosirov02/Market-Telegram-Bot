@@ -57,7 +57,7 @@ public class BotController {
                 sendMessage.setReplyMarkup(MyButtons.categoryButtons());
                 creatingProduct = true;
                 myMessage.setMessageType(MessageType.SEND_MESSAGE);
-            }else if (data.equals("buy")){
+            } else if (data.equals("buy")) {
                 Long id = callback.getFrom().getId();
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setChatId(String.valueOf(chatId));
@@ -153,15 +153,14 @@ public class BotController {
                     service.setSettings(sendMessage);
                     sendMessage.setText("Telefon raqamni o'zgartirishingiz mumkun");
                     myMessage.setMessageType(MessageType.SEND_MESSAGE);
-                }else if (text.equals("Raqamni o'zgartirish")){
+                } else if (text.equals("Raqamni o'zgartirish")) {
                     SendMessage sendMessage = new SendMessage();
                     sendMessage.setChatId(String.valueOf(chatId));
                     myMessage.setSendMessage(sendMessage);
                     service.getContact(sendMessage);
                     sendMessage.setText("Yangi raqamni kiriting");
                     myMessage.setMessageType(MessageType.SEND_MESSAGE);
-                }
-                else {
+                } else {
                     SendMessage sendMessage = new SendMessage();
                     sendMessage.setChatId(String.valueOf(chatId));
                     myMessage.setSendMessage(sendMessage);
@@ -178,15 +177,14 @@ public class BotController {
                 sendMessage.setReplyMarkup(MyButtons.mainButtons());
                 myMessage.setMessageType(MessageType.SEND_MESSAGE);
                 return myMessage;
-            }
-           else {
+            } else {
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setChatId(String.valueOf(chatId));
                 myMessage.setSendMessage(sendMessage);
                 sendMessage.setText("Noto'g'ri buyruq");
                 myMessage.setMessageType(MessageType.SEND_MESSAGE);
             }
-                return myMessage;
+            return myMessage;
         }
         return null;
     }

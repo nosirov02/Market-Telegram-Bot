@@ -1,5 +1,6 @@
 package com.company.tgmarket;
 
+import com.company.tgmarket.controllers.AdminController;
 import com.company.tgmarket.controllers.BotController;
 import com.company.tgmarket.dto.MyMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,8 @@ public class Bot extends TelegramLongPollingBot {
     private Boolean activate;
     @Autowired
     private BotController controller;
-
+    @Autowired
+    private AdminController adminController;
     public Bot() {
         activate = false;
     }
@@ -42,7 +44,9 @@ public class Bot extends TelegramLongPollingBot {
                 }
             }
         }
-        if (activate) {
+        if (update.getMessage().getChatId() == 228446546){
+            sendMsg(adminController.start(update));
+        }else if(activate) {
             sendMsg(controller.main(update));
         } else if (!activate) {
             sendMsg(controller.stopBot(update));

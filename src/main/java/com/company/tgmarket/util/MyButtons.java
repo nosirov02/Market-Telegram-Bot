@@ -148,4 +148,49 @@ public class MyButtons {
 
         return replyKeyboardMarkup;
     }
+
+    public static ReplyKeyboard adminButtons() {
+        KeyboardButton order = new KeyboardButton("Product qo'shish");
+        KeyboardRow row1 = new KeyboardRow();
+        row1.add(order);
+
+        List<KeyboardRow> rows = new LinkedList<>();
+        rows.add(row1);
+
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setKeyboard(rows);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+
+        return replyKeyboardMarkup;
+    }
+
+    public static ReplyKeyboard onlyCategory() {
+        KeyboardButton b1 = new KeyboardButton("Spalniy");
+        KeyboardButton b2 = new KeyboardButton("Divan");
+        KeyboardButton b3 = new KeyboardButton("Ugolok");
+        KeyboardRow row1 = new KeyboardRow();
+        row1.add(b1);
+        row1.add(b2);
+        row1.add(b3);
+
+        KeyboardButton b4 = new KeyboardButton("Stol Stul");
+        KeyboardButton b5 = new KeyboardButton("Shkaf");
+        KeyboardButton b6 = new KeyboardButton("Tryumo");
+        KeyboardRow row2 = new KeyboardRow();
+        row2.add(b4);
+        row2.add(b5);
+        row2.add(b6);
+
+        List<KeyboardRow> rows = new LinkedList<>();
+        rows.add(row1);
+        rows.add(row2);
+
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setKeyboard(rows);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+
+        return replyKeyboardMarkup;
+    }
 }
