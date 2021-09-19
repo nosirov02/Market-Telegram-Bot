@@ -1,5 +1,5 @@
 package com.company.tgmarket.enums;
 
 public enum ProductType {
-    Splaniy, Divan, Ugolok, Stol, Shkaf, Tryumo
+    Spalniy, Divan, Ugolok, Stol, Shkaf, Tryumo
 }

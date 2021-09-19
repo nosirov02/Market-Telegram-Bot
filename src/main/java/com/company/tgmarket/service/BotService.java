@@ -6,7 +6,9 @@ import com.company.tgmarket.entity.ProfileEntity;
 import com.company.tgmarket.repository.ProductRepository;
 import com.company.tgmarket.repository.ProfileRepository;
 import com.company.tgmarket.util.MyButtons;
+import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -29,6 +31,9 @@ public class BotService {
     private ProfileRepository profileRepository;
     @Autowired
     private ProductRepository productRepository;
+
+    @Value("${chat.id}")
+    private Long chatId;
 
     private String category;
     private List<ProductEntity> productList;
@@ -68,7 +73,8 @@ public class BotService {
 
     public void mainMenu(SendMessage sendMessage) {
         cartList = new LinkedList<>();
-        sendMessage.setText("Quyidagilardan birini tanlang");
+        String downFinger = EmojiParser.parseToUnicode(":point_down:");
+        sendMessage.setText("Quyidagilardan birini tanlang " + downFinger);
         sendMessage.setReplyMarkup(MyButtons.mainButtons());
     }
 
@@ -76,14 +82,15 @@ public class BotService {
         return text.equals("Spalniy")
                 || text.equals("Divan")
                 || text.equals("Ugolok")
-                || text.equals("Stol")
+                || text.equals("Stol Stul")
                 || text.equals("Shkaf")
                 || text.equals("Tryumo");
     }
 
     public void setCategory(SendMessage sendMessage, String text) {
         category = text;
-        sendMessage.setText("Quyidagilarni tanlang");
+        String downFinger = EmojiParser.parseToUnicode(":point_down:");
+        sendMessage.setText("Quyidagilardan birini tanlang " + downFinger);
         productList = productRepository.findAllByCategory(category);
         Integer productCount = productList.size();
         sendMessage.setReplyMarkup(MyButtons.productButtons(productCount));
@@ -113,15 +120,28 @@ public class BotService {
         cartList.add(product);
     }
 
-    public void getCartList(SendMessage sendMessage) {
-        StringBuilder products = new StringBuilder();
-        Double totalPrice = 0.0;
-        for (ProductEntity entity : cartList) {
-            products.append(entity.getName()).append("\n");
-            totalPrice += entity.getPrice();
+    public boolean getCartList(SendMessage sendMessage) {
+        if (cartList == null) {
+            String empty = EmojiParser.parseToUnicode(":shopping_trolley: :no_entry_sign:");
+            sendMessage.setText("Savatcha to'ldirilmagan " + empty);
+            return true;
+        } else if (cartList.isEmpty()) {
+            String empty = EmojiParser.parseToUnicode(":no_entry_sign:");
+            String cart = EmojiParser.parseToUnicode("\uD83D\uDED2");
+
+            sendMessage.setText("Savatcha to'ldirilmagan " + cart + empty);
+            return true;
+        } else {
+            StringBuilder products = new StringBuilder();
+            Double totalPrice = 0.0;
+            for (ProductEntity entity : cartList) {
+                products.append(entity.getName()).append("\n");
+                totalPrice += entity.getPrice();
+            }
+            sendMessage.setText("Savatchada: \n" + products + "\n" + "Umumiy narxi " + totalPrice);
+            sendMessage.setReplyMarkup(MyButtons.buyButton());
+            return false;
         }
-        sendMessage.setText("Savatchada: \n" + products + "\n" + "Umumiy narxi " + totalPrice);
-        sendMessage.setReplyMarkup(MyButtons.buyButton());
     }
 
     public void buyProduct(SendMessage sendMessage, Long id) {
@@ -130,7 +150,7 @@ public class BotService {
         Bot bot = new Bot();
         SendMessage buyMessage = new SendMessage();
         Optional<ProfileEntity> optional = profileRepository.findById(id);
-        if(!optional.isPresent()){
+        if (!optional.isPresent()) {
             throw new RuntimeException();
         }
         ProfileEntity profile = optional.get();
@@ -143,7 +163,7 @@ public class BotService {
         buyMessage.setText("Zakaz: \n" + products
                 + "\n" + "Umumiy narxi " + totalPrice
                 + "\n" + "Telefon raqam" + profile.getContact());
-        buyMessage.setChatId("-1001596985350");
+        buyMessage.setChatId(String.valueOf(chatId));
         try {
             bot.execute(buyMessage);
         } catch (TelegramApiException e) {

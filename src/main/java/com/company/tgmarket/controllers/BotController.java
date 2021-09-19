@@ -4,16 +4,20 @@ import com.company.tgmarket.dto.MyMessage;
 import com.company.tgmarket.enums.MessageType;
 import com.company.tgmarket.service.BotService;
 import com.company.tgmarket.util.MyButtons;
+import com.vdurmont.emoji.EmojiParser;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.*;
+
+import java.util.List;
 
 
 @Controller
+@Log
 public class BotController {
     @Autowired
     private BotService service;
@@ -74,9 +78,13 @@ public class BotController {
             MyMessage myMessage = new MyMessage();
             if (message.hasPhoto()) {
                 SendMessage sendMessage = new SendMessage();
+                List<PhotoSize> photoSizes = message.getPhoto();
+                String id = photoSizes.get(photoSizes.size() - 1).getFileId();
+                log.info("Image id - " + id);
                 sendMessage.setChatId(String.valueOf(chatId));
                 myMessage.setSendMessage(sendMessage);
-                sendMessage.setText("Noto'g'ri buyruq");
+                String error = EmojiParser.parseToUnicode(":no_entry:");
+                sendMessage.setText("Noto'g'ri buyruq " + error);
                 myMessage.setMessageType(MessageType.SEND_MESSAGE);
             }
             if (creatingProduct) {
@@ -92,8 +100,7 @@ public class BotController {
                     SendMessage sendMessage = new SendMessage();
                     sendMessage.setChatId(String.valueOf(chatId));
                     myMessage.setSendMessage(sendMessage);
-                    service.getCartList(sendMessage);
-                    creatingProduct = false;
+                    creatingProduct = service.getCartList(sendMessage);
                     myMessage.setMessageType(MessageType.SEND_MESSAGE);
                 } else if (text.equals("Ortga qaytish")) {
                     SendMessage sendMessage = new SendMessage();
@@ -151,20 +158,23 @@ public class BotController {
                     sendMessage.setChatId(String.valueOf(chatId));
                     myMessage.setSendMessage(sendMessage);
                     service.setSettings(sendMessage);
-                    sendMessage.setText("Telefon raqamni o'zgartirishingiz mumkun");
+                    String settings = EmojiParser.parseToUnicode(":gear:");
+                    sendMessage.setText("Telefon raqamni o'zgartirishingiz mumkun " + settings);
                     myMessage.setMessageType(MessageType.SEND_MESSAGE);
                 } else if (text.equals("Raqamni o'zgartirish")) {
                     SendMessage sendMessage = new SendMessage();
                     sendMessage.setChatId(String.valueOf(chatId));
                     myMessage.setSendMessage(sendMessage);
                     service.getContact(sendMessage);
-                    sendMessage.setText("Yangi raqamni kiriting");
+                    String phone = EmojiParser.parseToUnicode(":phone:");
+                    sendMessage.setText("Yangi raqamni kiriting " + phone);
                     myMessage.setMessageType(MessageType.SEND_MESSAGE);
                 } else {
                     SendMessage sendMessage = new SendMessage();
                     sendMessage.setChatId(String.valueOf(chatId));
                     myMessage.setSendMessage(sendMessage);
-                    sendMessage.setText("Noto'g'ri buyruq");
+                    String error = EmojiParser.parseToUnicode(":no_entry:");
+                    sendMessage.setText("Noto'g'ri buyruq " + error);
                     myMessage.setMessageType(MessageType.SEND_MESSAGE);
                 }
                 return myMessage;
@@ -181,7 +191,8 @@ public class BotController {
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setChatId(String.valueOf(chatId));
                 myMessage.setSendMessage(sendMessage);
-                sendMessage.setText("Noto'g'ri buyruq");
+                String error = EmojiParser.parseToUnicode(":no_entry:");
+                sendMessage.setText("Noto'g'ri buyruq " + error);
                 myMessage.setMessageType(MessageType.SEND_MESSAGE);
             }
             return myMessage;

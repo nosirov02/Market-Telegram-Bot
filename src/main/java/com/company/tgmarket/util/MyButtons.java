@@ -80,7 +80,7 @@ public class MyButtons {
 
         InlineKeyboardButton addToCart = new InlineKeyboardButton();
         addToCart.setText("savatga qoshish");
-        addToCart.setCallbackData("add/"+id);
+        addToCart.setCallbackData("add/" + id);
         List<InlineKeyboardButton> row = new LinkedList<>();
         row.add(addToCart);
 
@@ -101,7 +101,7 @@ public class MyButtons {
             if (i % 3 == 0) {
                 rows.add(row);
                 row = new KeyboardRow();
-            }else if (i == count){
+            } else if (i == count) {
                 rows.add(row);
             }
 
